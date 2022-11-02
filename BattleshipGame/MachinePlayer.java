@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Random;
+/*to be implemented ASAP, as incomplete*/
 public class MachinePlayer implements InputSource {
 
     String name;
