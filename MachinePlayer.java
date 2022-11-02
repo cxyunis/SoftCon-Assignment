@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Random;
 public class MachinePlayer implements InputSource {
 
+    /*this code still needs fixing*/
     String name;
 
     public MachinePlayer(String name) { this.name = name; }
