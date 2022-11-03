@@ -1,13 +1,15 @@
+//import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class GameModel {
+
     private List<Ship> boatFleet = new ArrayList<>();
     private GameBoard oceanBoard = new GameBoard("OCEAN  GRID");
     private TargetBoard targetBoard = new TargetBoard("TARGET GRID");  // machine player board
     private HumanPlayer oceanUser;  // an ocean user (human user)
-    private MachinePlayer targetUser;  // a computerized user
+    private MachinePlayer targetUser;  // an computerized user
 
     private String startingPlayer;
 
@@ -34,7 +36,7 @@ public class GameModel {
         String[] blockPos;  // input for starting and ending grid (e.g. C3,C5 for BattleShip)
         boolean shipPlaced;
         List<GridValue> humanChips; // a list of chips (ships), each chip is an object of GridValue
-                                    // using ChipValue is more appropriate
+                                    // may using ChipValue is more appropriate
                                     // should contain starting and ending grid location and type of ship
         List<GridValue> machineChips;
         List<String> listOfPos;     // list of gird positions, e.g. [A2,A3,A4,A5]
@@ -44,18 +46,18 @@ public class GameModel {
         showGameBoard();    // display the game boards status at the start of the game
 
         // ************* human player **************
-        System.out.println("Human/Ocean Board player inputs"); //maybe human player is enough
+        System.out.println("Human/Ocean Board player inputs");
         int shipNo = 0;
         int nShip = 0;
         for (Ship s: this.boatFleet) {
             shipPlaced = false;         // become true if the chip (ship) placed on the board
 
-            // handle ship number for input: everytime there is a ship type change, nship!=s.getQuantity()
+            // handle ship number for input
             if (nShip!=s.getQuantity()) {
                 nShip = s.getQuantity();
                 shipNo = 0;
             }
-            shipNo++; //to be used in getShipPlacement prompt in HumanPlayer
+            shipNo++;
 
             while (!shipPlaced) {
                 humanChips = askPlayerForShipPlacement(this.oceanUser,s,shipNo);
@@ -65,7 +67,7 @@ public class GameModel {
                     shipPlaced = true;
                 }
             }
-            showGameBoard();  // remove this once development completed: used for testing
+            showGameBoard();  // remove this once development completed
         }
 
         //  ************* machine player **************
@@ -76,15 +78,19 @@ public class GameModel {
 
             while (!shipPlaced) {
                 machineChips = askPlayerForShipPlacement(this.targetUser,s,shipNo);
+                System.out.println(machineChips.get(0).getPosition());
+                System.out.println(machineChips.get(1).getPosition());
                 listOfPos = convertToListOfPosition(machineChips.get(0),machineChips.get(1));
+                System.out.println(listOfPos);
                 if (areGridsAvailable(targetBoard,listOfPos,s)) {
                     setShipOnBoard(targetBoard, listOfPos, s);
                     shipPlaced = true;
+                    // listOfPos = [E5,E6] for Patrol (s = Ship.Patrol)
                     targetBoard.updatePlayedShip(s,listOfPos);  // specialist to handle display at diff stages
                 }
             }
         }
-        showGameBoard();    // remove this once development completed: used for testing
+        showGameBoard();    // remove this once development completed
 
         // attacking starts here
         boolean gameOver = false;
@@ -105,7 +111,7 @@ public class GameModel {
                 attackPos = oceanUser.getAttackAt();
                 validHit = targetBoard.setAttackAt(attackPos);
                 if (validHit) {
-//working on it
+                    targetBoard.updateAttackedShipGrid(attackPos);  //specialised method for target board
                 } else {
                     System.out.println("Invalid position!");
                 }
@@ -125,7 +131,7 @@ public class GameModel {
         showGameBoard();    // remove / change this for showing to opponent remaining ships
     }
     private boolean areGridsAvailable(GameBoard userBoard, List<String> posList, Ship boat) {
-        // check if the input list of grids are available completely for placing the ship
+        // check if the input list of grids available completely for placing the ship
         boolean occupied;
         int count = 0;
         for (String pos: posList) {
@@ -134,7 +140,6 @@ public class GameModel {
                 count++;
             }
         }
-//check if the boat size can fit in the non occupied given position
         if (count!=boat.getSize()) {
             System.out.println("Invalid block position!");
             return false;   // some of grid is occupied
@@ -155,11 +160,11 @@ public class GameModel {
         convert starting and ending grids (GridValue) into a list of grids cover from starting
         to ending grids. e.g. A1,A4 become [A1,A2,A3,A4]
         * */
-        String startCol = start.getPosition().substring(0,1); //charAt was not used because i will need to convert to string again
+        String startCol = start.getPosition().substring(0,1);
         String startRowNo = start.getPosition().substring(1,2);
         String stopCol = stop.getPosition().substring(0,1);
         String stopRowNo = stop.getPosition().substring(1,2);
-        int row1 = Integer.parseInt(startRowNo); //convert to integer
+        int row1 = Integer.parseInt(startRowNo);
         int row2 = Integer.parseInt(stopRowNo);
 
         List<String> listOfPos = new ArrayList<>();
@@ -169,7 +174,7 @@ public class GameModel {
                 listOfPos.add(startCol+String.valueOf(i));
             }
         } else {
-            //horizontal filling
+            // need to revise to ensure it is really horizontal filling
             int idx1 = GameBoard.COLUMN_HEADER.indexOf(startCol);
             int idx2 = GameBoard.COLUMN_HEADER.indexOf(stopCol);
             for (int i=idx1; i<idx2+1; i++) {
@@ -197,7 +202,7 @@ public class GameModel {
 
     public void setStartingPlayer() {
         Random rand = new Random();
-        float selectPlayer = rand.nextFloat(); //chances
+        float selectPlayer = rand.nextFloat();
         if (selectPlayer<0.5) {
             startingPlayer = "Human Player";
         } else {
