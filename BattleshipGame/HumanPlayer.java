@@ -16,35 +16,61 @@ public class HumanPlayer implements InputSource {
     }
 
     @Override
-    public String[] getShipPlacement(Ship shipModel) {
-        boolean correct = false; //to test if all the string inputs have been read
+    public String[] getShipPlacement(Ship shipModel, int shipNo) {
+        // get ship locations from human user, return String array, i.e. [A1,A4]
+        boolean correct = false;
         String blokPos;
         List<String> input = new ArrayList<String>();
         String[] shipPos = new String[2];
-        String prompt = "Please enter the position of your "+shipModel.toString()+": ";
+        String prompt = "Please enter the position of your "+shipModel.toString()+" "+shipNo+": ";
 
         while(!correct) {
             blokPos = getBlockPosition(prompt);  // A1,A3
-            input = Arrays.asList(blokPos.split("\\s*,\\s*")); //split on any number of whitespace characters and comma
+            input = Arrays.asList(blokPos.split("\\s*,\\s*"));
             correct = validateBlockPosition(input);
+            if (!correct) {
+                System.out.println("Invalid position!");
+            }
         }
         shipPos[0] = input.get(0);
         shipPos[1] = input.get(1);
         return shipPos;
     }
 
-//    @Override
-//    public String[] getShipPlacement() {
-//
-//        return new String[0];
-//    }
-
     public String getAttackAt() {
-        // to implement
-        return "";
+        String blockPos = "";
+        boolean correct = false;
+        while (!correct) {
+            blockPos = getBlockPosition("Please enter attacking position: ");
+            correct = validatePositionFormat(blockPos);
+            if (!correct) {
+                System.out.println("Invalid position!");
+            }
+        }
+        return blockPos;
+    }
+    private boolean validatePositionFormat(String pos) {
+        if (pos.length()!=2) {
+            return false;   // expecting to have size = 2, e.g J5
+        }
+        if (!GameBoard.COLUMN_HEADER.contains(pos.substring(0,1))) {
+            return false;   // expecting to have first letter from A-J
+        }
+        //String p = pos.substring(1,2);
+        char p = pos.charAt(1);
+        int q = (int) p;
+        if (q<48 || q>57) {
+            return false;   // expect integer
+        }
+//        int j = Integer.parseInt(p);
+//        if (j<0 || j>GameBoard.GRID_DIMENSION) {
+//            return false;   // expecting to have integer in [0,1,...,8,9]
+//        }
+        return true;
     }
 
     private String getBlockPosition(String prompt) {
+        /* return block position: e.g A5 or A3,A6 */
         String blockPos = "";
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         System.out.print(prompt);
@@ -58,21 +84,15 @@ public class HumanPlayer implements InputSource {
         return blockPos;
     }
     private boolean validateBlockPosition(List<String> blokPos) {
-        if (blokPos.size()!=2) {
-            //what does this do
+        final int SIZE = 2; // expecting List of size 2, starting and ending location, e.g. [A1,A5]
+
+        if (blokPos.size()!=SIZE) {
             return false;
         }
-        int row;
-        String s;
         String loc;
-        for (int i=0; i<2; i++) {
+        for (int i=0; i<SIZE; i++) {
             loc = blokPos.get(i);
-            s = String.valueOf(loc.charAt(0)); //charAt return character at specified index of string
-            if (!COLHEADER.contains(s)) {
-                return false;
-            }
-            row = Integer.parseInt(loc.substring(1,loc.length()));
-            if (row<0 || row>10) {
+            if (!validatePositionFormat(loc)) {
                 return false;
             }
         }
