@@ -29,7 +29,7 @@ public class HumanPlayer implements InputSource {
             input = Arrays.asList(blokPos.split("\\s*,\\s*"));
             correct = validateBlockPosition(input);
             if (!correct) {
-                System.out.println("Invalid position!");
+                System.out.println("Invalid position! Please re-enter a valid position");
             }
         }
         shipPos[0] = input.get(0);
