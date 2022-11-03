@@ -197,7 +197,7 @@ public class GameModel {
 
     public void setStartingPlayer() {
         Random rand = new Random();
-        float selectPlayer = rand.nextFloat();
+        float selectPlayer = rand.nextFloat(); //chances
         if (selectPlayer<0.5) {
             startingPlayer = "Human Player";
         } else {
