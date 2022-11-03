@@ -1,14 +1,21 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameBoard {
 
-    protected String boardLabel;
-    private final String[][] aBoard = new String[10][10];
-    public GameBoard () {
-        boardLabel = "GAME   GRID";
-        for (int i=0; i<10; i++) {
-            for (int j=0; j<10; j++) {
-                aBoard[i][j] = "E"; //E = empty
+    /* Super class of specific board, i.e. OceanBoard and TargetBoard */
+
+    public static final String COLUMN_HEADER = "ABCDEFGHIJ";
+    public static final int GRID_DIMENSION = 10;
+
+    protected String boardLabel;    // label appears on top of the board
+    protected final String[][] aBoard = new String[GRID_DIMENSION][GRID_DIMENSION];
+
+    public GameBoard (String name) {
+        boardLabel = name;
+        for (int i=0; i<GRID_DIMENSION; i++) {
+            for (int j=0; j<GRID_DIMENSION; j++) {
+                aBoard[i][j] = "E";
             }
         }
     }
@@ -18,32 +25,36 @@ public class GameBoard {
         int r = rc[0];
         int c = rc[1];
         aBoard[r][c] = gridVal.getMarkerID();
-        System.out.println(aBoard[r][c]);
     }
     public boolean isOccupied(String blockPos) {
         String s = this.getGridStatus(blockPos);
-        boolean got_ship = s.equals("C") | s.equals("S") |
-                           s.equals("P") | s.equals("B");
+        boolean got_ship = s.equals("C") || s.equals("S") ||
+                           s.equals("P") || s.equals("B");
         return got_ship;
     }
+    protected boolean isHit(String blockPos) {
+        String s = this.getGridStatus(blockPos);
+        return s.equals("X") || s.equals("O");
+    }
 
-    /**
-     * @param x position on board, 0<=x<10
-     * @param y position on board, 0<=y<10
-     */
-    public void setAttackAt(String blockPos) {
+    public boolean setAttackAt(String blockPos) {
+        /* return false: either X or O, for use to decide
+        *  return true : got ship or empty
+        * */
         int[] rc = convertToRowCol(blockPos);
         int r = rc[0];
         int c = rc[1];
-
-        if (isOccupied(blockPos)) {
+        if (isHit(blockPos)) {
+            return false;
+        } else if (isOccupied(blockPos)) {
             aBoard[r][c] = "X";
         } else {
             aBoard[r][c] = "O";
         }
+        return true;
     }
 
-    private int[] convertToRowCol(String blockPos) {
+    protected int[] convertToRowCol(String blockPos) {
         int r = rowToInteger(blockPos.charAt(1));    // 2 of A2
         int c = columnToInteger(blockPos.charAt(0)); // A of A2
         int[] rc = {r,c};
@@ -58,7 +69,8 @@ public class GameBoard {
         return r-48;    // char value 48 is 0, 49 is 1,...
     }
     private String indexToRowCol(int r, int c) {
-        String[] col = {"A","B","C","D","E","F","G","H","I","J"};
+        //String[] col = {"A","B","C","D","E","F","G","H","I","J"};
+        String[] col = GameBoard.COLUMN_HEADER.split("");
         String[] row = {"0","1","2","3","4","5","6","7","8","9"};
         return col[c]+row[r];
     }
@@ -72,20 +84,22 @@ public class GameBoard {
     }
 
     public boolean isGameOver() {
+        // can be improved in speed
         String blockPos;
         int count = 0;
-        for (int r=0; r<10; r++) {
-            for (int c=0; c<10; c++) {
+        int expectedCount = GRID_DIMENSION*GRID_DIMENSION;
+        for (int r=0; r<GRID_DIMENSION; r++) {
+            for (int c=0; c<GRID_DIMENSION; c++) {
                 blockPos = indexToRowCol(r,c);
                 if (!hasShipAt(blockPos)) {
                     count++;
                 }
             }
         }
-        return (count==100);
+        return (count==expectedCount);
     }
 
-    public String getGridStatus(String blockPos) {
+    private String getGridStatus(String blockPos) {
         int[] rc = convertToRowCol(blockPos);
         return aBoard[rc[0]][rc[1]];
     }
@@ -95,9 +109,9 @@ public class GameBoard {
         board[0] = "===== "+boardLabel+" =====";
         board[1] = "  A B C D E F G H I J  ";
         board[2] = " +-+-+-+-+-+-+-+-+-+-+ ";
-        for (int i=0; i<10; i++) {
+        for (int i=0; i<GRID_DIMENSION; i++) {
             s = Integer.toString(i);
-            for (int j = 0; j < 10; j++) {
+            for (int j = 0; j < GRID_DIMENSION; j++) {
                 if (this.aBoard[i][j].equals("E")) {
                     s += "| ";
                 } else {
