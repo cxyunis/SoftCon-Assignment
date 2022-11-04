@@ -38,14 +38,14 @@ public class GameBoard {
     }
 
     public boolean setAttackAt(String blockPos) {
-        /* return false: either X or O, for use to decide
+        /* return false: either X or O, set again
         *  return true : got ship or empty
         * */
         int[] rc = convertToRowCol(blockPos);
         int r = rc[0];
         int c = rc[1];
         if (isHit(blockPos)) {
-            return false;
+            return false;   // invalid position
         } else if (isOccupied(blockPos)) {
             aBoard[r][c] = "X";
         } else {
