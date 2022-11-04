@@ -20,6 +20,7 @@ public class TargetBoard extends GameBoard {
     }
 
     private String[][] getACopyOfTargetBoard() {
+        // get a copy of board status, only contain O,X
         String s;
         String[][] copyBoard = new String[GRID_DIMENSION][GRID_DIMENSION];
         for (int i=0; i<GRID_DIMENSION; i++) {
@@ -34,6 +35,28 @@ public class TargetBoard extends GameBoard {
             }
         }
         return copyBoard;
+    }
+    private String[][] getACopyOfGameOverTargetBoard() {
+        // get a copy of board status, if machine player won the game
+        String s;
+        String[][] copyBoard = new String[GRID_DIMENSION][GRID_DIMENSION];
+        for (int i=0; i<GRID_DIMENSION; i++) {
+            for (int j = 0; j < GRID_DIMENSION; j++) {
+                if (this.aBoard[i][j].equals("O")) {
+                    copyBoard[i][j] = "O";
+                } else if (this.aBoard[i][j].equals("X")) {
+                    copyBoard[i][j] = "X";
+                } else {
+                    copyBoard[i][j] = aBoard[i][j];
+                }
+            }
+        }
+        return copyBoard;
+    }
+
+    public String[] getFinalDisplay() {
+        // when machine player wins
+        return super.getBoardDisplay();
     }
 
     public String[] getBoardDisplay() {
