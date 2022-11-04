@@ -56,7 +56,7 @@ public class ShipGrid {
     }
     public boolean updateGridPositionStatus(String gridPos) {
         for (GridState gs: listOfShipState) {
-            if (gs.gridPos==gridPos) {
+            if (gs.gridPos.equals(gridPos)) {
                 gs.gridStatus = 1;
                 return true;
             }
