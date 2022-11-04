@@ -4,7 +4,7 @@ public class GridValue {
 
     public GridValue(String gridPos, Ship gridVal) {
         this.gridPos = gridPos; // A1
-        this.aShip = gridVal; // String Carrier/Submarine/Empty/...
+        this.aShip = gridVal;
     }
     public String getMarkerID() {
         return aShip.toString().substring(0,1);
