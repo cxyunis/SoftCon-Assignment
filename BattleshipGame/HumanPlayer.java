@@ -29,7 +29,7 @@ public class HumanPlayer implements InputSource {
             input = Arrays.asList(blokPos.split("\\s*,\\s*"));
             correct = validateBlockPosition(input);
             if (!correct) {
-                System.out.println("Invalid position! Please re-enter a valid position");
+                System.out.println("Invalid position!");
             }
         }
         shipPos[0] = input.get(0);
@@ -62,10 +62,6 @@ public class HumanPlayer implements InputSource {
         if (q<48 || q>57) {
             return false;   // expect integer
         }
-//        int j = Integer.parseInt(p);
-//        if (j<0 || j>GameBoard.GRID_DIMENSION) {
-//            return false;   // expecting to have integer in [0,1,...,8,9]
-//        }
         return true;
     }
 
