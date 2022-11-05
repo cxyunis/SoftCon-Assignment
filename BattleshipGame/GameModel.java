@@ -1,6 +1,5 @@
 //import java.util.List;
 import java.util.ArrayList;
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Random;
 
@@ -12,8 +11,11 @@ public class GameModel {
     private HumanPlayer oceanUser;  // an ocean user (human user)
     private MachinePlayer targetUser;  // an computerized user
 
+
     private String startingPlayer;
     private String winner;
+
+    private String currentPlayer;
 
     public GameModel(String player1, String player2) {
         oceanUser = new HumanPlayer(player1);
@@ -45,12 +47,14 @@ public class GameModel {
 
         setStartingPlayer();        // set the starting player
 
-        showGameBoard();    // display the game boards status at the start of the game
+        //showGameBoard();    // display the game boards status at the start of the game
+        showGameBoardSideBySide();
 
         // ************* human player **************
         System.out.println("\nHuman/Ocean Board player inputs\n");
         int shipNo = 0;
         int nShip = 0;
+        currentPlayer = "Human Player";
         for (Ship s: this.boatFleet) {
             shipPlaced = false;         // become true if the chip (ship) placed on the board
 
@@ -75,6 +79,7 @@ public class GameModel {
         //  ************* machine player **************
         //  implemented with random algo for generating the ship locations
         System.out.println("\nMachine/Target Board player inputs\n");
+        currentPlayer = "Machine Player";
         for (Ship s: this.boatFleet) {
             shipPlaced = false;
 
@@ -89,40 +94,55 @@ public class GameModel {
                 }
             }
         }
-        showGameBoard();    // remove this once development completed
+        //showGameBoard();    // remove this once development completed
+        showGameBoardSideBySide();
 
         // attacking starts here
         boolean gameOver = false;
         boolean validHit = false;
         String attackPos;
+        String status;
 
         System.out.println("\n"+startingPlayer+" starts first.");
         if (startingPlayer=="Machine Player") {
-            while(!validHit) {
-                attackPos = targetUser.getAttackAt();
-                validHit = oceanBoard.setAttackAt(attackPos);
-            }
-            showGameBoard();
+            currentPlayer = "Machine Player";
+            attackPos = attackOpponent(targetUser,oceanBoard);
+            status = oceanBoard.getGridStatus(attackPos);       // specialise
+            targetUser.updateAttackAtStatus(attackPos,status);  // specialise
+
+
+            //showGameBoard();
+            showGameBoardSideBySide();
+            targetUser.displayBoard();
         }
 
         while(!gameOver) {
+            currentPlayer = "Human Player";
             attackPos = attackOpponent(oceanUser,targetBoard);
             targetBoard.updateAttackedShipGrid(attackPos);  //specialised method for target board
+
             gameOver = targetBoard.isGameOver();
             if (gameOver) {
                 winner = "Human Player";
             }
 
             if (!gameOver) {
-                attackOpponent(targetUser,oceanBoard);
+                currentPlayer = "Machine Player";
+                attackPos = attackOpponent(targetUser,oceanBoard);
+                status = oceanBoard.getGridStatus(attackPos);       // specialise
+                targetUser.updateAttackAtStatus(attackPos,status);  // specialise
+
                 gameOver = oceanBoard.isGameOver();
                 if (gameOver) {
                     winner = "Machine Player";
                 }
-                showGameBoard();
+                //showGameBoard();
+                showGameBoardSideBySide();
+                targetUser.displayBoard();
             }
         }
-        showGameBoard();    // remove / change this for showing to opponent remaining ships
+        //showGameBoard();    // remove / change this for showing to opponent remaining ships
+        showGameBoardSideBySide();
         System.out.println("****************** Game Over ******************");
         System.out.println("The winner is "+winner);
         if (winner.equals("Machine Player")) {
@@ -140,8 +160,8 @@ public class GameModel {
         while (!validHitPos) {
             attackPos = user.getAttackAt();
             validHitPos = opponentBoard.setAttackAt(attackPos);
-            if (!validHitPos) {
-                System.out.println("Invalid position!");
+            if (!validHitPos && currentPlayer.equals("Human Player")) {
+                System.out.println("Invalid Position: position to attack has been chosen before");
             }
         }
         return attackPos;
@@ -156,8 +176,8 @@ public class GameModel {
                 count++;
             }
         }
-        if (count!=boat.getSize()) {
-            System.out.println("Invalid block position!");
+        if (count!=boat.getSize() && currentPlayer.equals("Human Player")) {
+            System.out.println("Invalid Position: block position(s) is/are not available!");
             return false;   // some of grid is occupied
         }
         return true;
@@ -241,6 +261,20 @@ public class GameModel {
         oBoard = oceanBoard.getBoardDisplay();
         for (String line : oBoard) {
             System.out.println(line);
+        }
+    }
+
+    public void showGameBoardSideBySide() {
+        String[] tBoard;
+        String[] oBoard;
+
+        tBoard = targetBoard.getBoardDisplay();
+        System.out.println("\n");
+        String[] sideBySideBoard = new String[tBoard.length];
+        oBoard = oceanBoard.getBoardDisplay();
+        String str;
+        for (int i=0; i<tBoard.length; i++) {
+            System.out.println(tBoard[i]+"  ║  "+oBoard[i]);
         }
     }
 }
