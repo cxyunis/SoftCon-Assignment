@@ -113,7 +113,7 @@ public class GameModel {
 
             //showGameBoard();
             showGameBoardSideBySide();
-            targetUser.displayBoard();
+//            targetUser.displayBoard();
         }
 
         while(!gameOver) {
@@ -138,7 +138,7 @@ public class GameModel {
                 }
                 //showGameBoard();
                 showGameBoardSideBySide();
-                targetUser.displayBoard();
+//                targetUser.displayBoard();
             }
         }
         //showGameBoard();    // remove / change this for showing to opponent remaining ships
