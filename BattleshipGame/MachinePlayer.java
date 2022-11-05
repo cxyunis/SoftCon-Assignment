@@ -1,9 +1,70 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 public class MachinePlayer implements InputSource {
 
-    String name;
+    private String name;
 
-    public MachinePlayer(String name) { this.name = name; }
+    private String[][] enemyBoard = new String[GameBoard.GRID_DIMENSION][GameBoard.GRID_DIMENSION];
+
+    class NeighbourHood {
+
+        List<String> listOfXPos = new ArrayList<>();
+
+        public void add(String xPos) {
+            listOfXPos.add(xPos);
+        }
+        public String getAttackAt() {
+            String x;
+            int row, col;
+
+            while(!listOfXPos.isEmpty()) {
+                x = listOfXPos.get(0);
+                row = Integer.parseInt(x.substring(1,2));
+                col = x.charAt(0)-65;
+                if (col>0) {
+                    if (enemyBoard[row][col-1].equals("E")) {
+                        return gridPosition(row,col-1);
+                    }
+                }
+                if (col<GameBoard.GRID_DIMENSION-1) {
+                    if (enemyBoard[row][col+1].equals("E")) {
+                        return gridPosition(row,col+1);
+                    }
+                }
+                if (row>0) {
+                    if (enemyBoard[row-1][col].equals("E")) {
+                        return gridPosition(row-1,col);
+                    }
+                }
+                if (row<GameBoard.GRID_DIMENSION-1) {
+                    if (enemyBoard[row+1][col].equals("E")) {
+                        return gridPosition(row+1,col);
+                    }
+                }
+                listOfXPos.remove(0);
+            }
+            Random rnd = new Random();
+            row = rnd.nextInt(GameBoard.GRID_DIMENSION);
+            col = rnd.nextInt(GameBoard.GRID_DIMENSION);
+            String pos = gridPosition(row,col);
+            return pos;
+        }
+        private String gridPosition(int row, int col) {
+            return GameBoard.COLUMN_HEADER.substring(col,col+1)+row;
+        }
+    }
+
+    private NeighbourHood trackX = new NeighbourHood();
+
+    public MachinePlayer(String name) {
+        this.name = name;
+        for (int i=0; i<GameBoard.GRID_DIMENSION; i++) {
+            for (int j=0; j<GameBoard.GRID_DIMENSION; j++) {
+                enemyBoard[i][j] = "E";
+            }
+        }
+    }
 
     private String[] getBlockPosition(Ship ship) {
         Random rnd = new Random();
@@ -54,11 +115,39 @@ public class MachinePlayer implements InputSource {
         return shipPos;
     };
     public String getAttackAt() {
-        Random rnd = new Random();
-        int randomCol = rnd.nextInt(GameBoard.GRID_DIMENSION);
-        String colHdr = GameBoard.COLUMN_HEADER.substring(randomCol,randomCol+1);
-        int randomRow = rnd.nextInt(GameBoard.GRID_DIMENSION);
-        return colHdr+randomRow;
+        return trackX.getAttackAt();
+//        Random rnd = new Random();
+//        int randomCol = rnd.nextInt(GameBoard.GRID_DIMENSION);
+//        String colHdr = GameBoard.COLUMN_HEADER.substring(randomCol,randomCol+1);
+//        int randomRow = rnd.nextInt(GameBoard.GRID_DIMENSION);
+//        return colHdr+randomRow;
     };
+    public void updateAttackAtStatus(String gridPos, String gridMarker) {
+        // requires update from GameModel about hit (X) or not (o), then
+        // update opponent board for internal use of selecting next attacking position
+        int col = gridPos.charAt(0)-65;
+        int row = gridPos.charAt(1)-48;
+        enemyBoard[row][col] = gridMarker;   // only o or X
+        if (gridMarker.equals("X")) {
+            trackX.add(gridPos);
+        }
+    }
+
+//    public void displayBoard() {
+//        String line;
+//        for (int i=0; i<GameBoard.GRID_DIMENSION; i++) {
+//            line = "";
+//            for (int j=0; j<GameBoard.GRID_DIMENSION; j++) {
+//                if (enemyBoard[i][j].equals("E")) {
+//                    line += "| ";
+//                } else {
+//                    line += "|"+enemyBoard[i][j];
+//                }
+//            }
+//            System.out.println(line);
+//        }
+//    }
+
+//    private String getCloseProximityAttackingPosition()
 
 }
