@@ -6,8 +6,8 @@ import java.util.Random;
 public class GameModel {
 
     private List<Ship> boatFleet = new ArrayList<>();
-    private GameBoard oceanBoard = new GameBoard("OCEAN  GRID");
-    private TargetBoard targetBoard = new TargetBoard("TARGET GRID");  // machine player board
+    private GameBoard oceanBoard = new GameBoard("OCEAN  GRID"); //an instance of GameBoard
+    private TargetBoard targetBoard = new TargetBoard("TARGET GRID");  // an instance of TargetBoard
     private HumanPlayer oceanUser;  // an ocean user (human user)
     private MachinePlayer targetUser;  // an computerized user
 
@@ -236,7 +236,7 @@ public class GameModel {
         return shipPlacement;  // contains starting and ending GridValue
     }
 
-    public void setStartingPlayer() {
+    private void setStartingPlayer() {
         Random rand = new Random();
         float selectPlayer = rand.nextFloat();
         if (selectPlayer<0.5) {
@@ -246,7 +246,7 @@ public class GameModel {
         }
     }
 
-    public void showGameBoard() {
+    private void showGameBoard() {
         String[] tBoard;
         String[] oBoard;
 
@@ -264,7 +264,7 @@ public class GameModel {
         }
     }
 
-    public void showGameBoardSideBySide() {
+    private void showGameBoardSideBySide() {
         String[] tBoard;
         String[] oBoard;
 
