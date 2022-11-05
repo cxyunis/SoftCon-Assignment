@@ -11,12 +11,15 @@ public class TargetBoard extends GameBoard {
         // a list of element (ShipGrid), ShipGrid contains 1 ship occupied many grids
         playedShip.add(new ShipGrid(ship,posList));
     }
-    public void updateAttackedShipGrid(String pos) {
+    public String updateAttackedShipGrid(String pos) {
+        // playedShip contains 10 ShipGrid (10 ships/chips)
+        // 1 ShipGrid contains a) Ship, b) Ship.length grids
         for (ShipGrid sg: playedShip) {
             if (sg.updateGridPositionStatus(pos)) {
                 break;
             }
         }
+        return "o";
     }
 
     private String[][] getACopyOfTargetBoard() {
@@ -25,8 +28,8 @@ public class TargetBoard extends GameBoard {
         String[][] copyBoard = new String[GRID_DIMENSION][GRID_DIMENSION];
         for (int i=0; i<GRID_DIMENSION; i++) {
             for (int j = 0; j < GRID_DIMENSION; j++) {
-                if (this.aBoard[i][j].equals("O")) {
-                    copyBoard[i][j] = "O";
+                if (this.aBoard[i][j].equals("o")) {
+                    copyBoard[i][j] = "o";
                 } else if (this.aBoard[i][j].equals("X")) {
                     copyBoard[i][j] = "X";
                 } else {
@@ -42,8 +45,8 @@ public class TargetBoard extends GameBoard {
         String[][] copyBoard = new String[GRID_DIMENSION][GRID_DIMENSION];
         for (int i=0; i<GRID_DIMENSION; i++) {
             for (int j = 0; j < GRID_DIMENSION; j++) {
-                if (this.aBoard[i][j].equals("O")) {
-                    copyBoard[i][j] = "O";
+                if (this.aBoard[i][j].equals("o")) {
+                    copyBoard[i][j] = "o";
                 } else if (this.aBoard[i][j].equals("X")) {
                     copyBoard[i][j] = "X";
                 } else {
@@ -92,7 +95,7 @@ public class TargetBoard extends GameBoard {
         }
         board[13] = " +-+-+-+-+-+-+-+-+-+-+ ";
         board[14] = "  A B C D E F G H I J  ";
-        board[15] = "========================";
+        board[15] = "=======================";
         return board;
     }
 }
