@@ -27,10 +27,10 @@ public class HumanPlayer implements InputSource {
         while(!correct) {
             blokPos = getBlockPosition(prompt);  // A1,A3
             input = Arrays.asList(blokPos.split("\\s*,\\s*"));
-            correct = validateBlockPosition(input);
-            if (!correct) {
-                System.out.println("Invalid position!");
-            }
+            correct = validateBlockPosition(input,shipModel);
+//            if (!correct) {
+//                System.out.println("Invalid position!");
+//            }
         }
         shipPos[0] = input.get(0);
         shipPos[1] = input.get(1);
@@ -43,23 +43,33 @@ public class HumanPlayer implements InputSource {
         while (!correct) {
             blockPos = getBlockPosition("Please enter attacking position: ");
             correct = validatePositionFormat(blockPos);
-            if (!correct) {
-                System.out.println("Invalid position!");
-            }
+//            if (!correct) {
+//                System.out.println("Invalid position!");
+//            }
         }
         return blockPos;
     }
     private boolean validatePositionFormat(String pos) {
+        // assuming that the following are responsibility of the player to know the rules of the game
+        // unless for the information not available to him
+
+        // expecting to have size = 2, e.g J5
         if (pos.length()!=2) {
-            return false;   // expecting to have size = 2, e.g J5
+            System.out.println("Invalid Position: input is out of bounds");
+            return false;
         }
+
+        // expecting 1st character to have letter from A-J
         if (!GameBoard.COLUMN_HEADER.contains(pos.substring(0,1))) {
-            return false;   // expecting to have first letter from A-J
+            System.out.println("Invalid Position: 1st input character is not in [A,B,...,I,J] format");
+            return false;
         }
-        //String p = pos.substring(1,2);
+
+        // expecting the 2nd character is integer from [0,9]
         char p = pos.charAt(1);
         int q = (int) p;
         if (q<48 || q>57) {
+            System.out.println("Invalid Position: 2nd input character is not in [0,1,...,8,9] format");
             return false;   // expect integer
         }
         return true;
@@ -79,19 +89,56 @@ public class HumanPlayer implements InputSource {
         }
         return blockPos;
     }
-    private boolean validateBlockPosition(List<String> blokPos) {
-        final int SIZE = 2; // expecting List of size 2, starting and ending location, e.g. [A1,A5]
+    private boolean validateBlockPosition(List<String> blokPos, Ship shipModel) {
+        // assuming that the following are the responsibility of the player to know the rules of the game
+        // unless for the information not available to him
+        // this procedure is to validate for a range of positions (starting and ending positions)
 
+        // expecting a list of 2 (SIZE) elements, e.q [A2,A5]
+        final int SIZE = 2; // expecting List of size 2, starting and ending location, e.g. [A1,A5]
         if (blokPos.size()!=SIZE) {
+            System.out.println("Invalid Position: input must have 2 position separated by comma e.g. A1,A6");
             return false;
         }
-        String loc;
-        for (int i=0; i<SIZE; i++) {
-            loc = blokPos.get(i);
-            if (!validatePositionFormat(loc)) {
+
+        String firstPos = blokPos.get(0);
+        String secondPos = blokPos.get(1);
+
+        // expecting 1st character is in [A,B,...,J] and 2nd character is in [0,1,...,9]
+        if (!validatePositionFormat(firstPos) || !validatePositionFormat(secondPos)) {
+            return false;
+        }
+
+        // expecting horizontal or vertical placement positions only
+        if (firstPos.equals(secondPos)) {
+            System.out.println("Invalid Position: starting block input and ending block input cannot be the same");
+            return false;   //e.g [A4,A4]
+        }
+        if (firstPos.charAt(0)!=secondPos.charAt(0) &&
+            firstPos.charAt(1)!=secondPos.charAt(1)) {
+            System.out.println("Invalid Position: input must be horizontal or vertical in range of position");
+            return false;   //e.g. [A4,B6], i.e not horizontal/vertical
+        }
+
+        // expecting the vertical block of positions equal to Ship.size()
+        int length;
+        if (firstPos.charAt(0)==secondPos.charAt(0)) {
+            length = secondPos.charAt(1) - firstPos.charAt(1) + 1;
+            if (length!=shipModel.getSize()) {
+                System.out.println("Invalid Position: the range of position must be equal to "+shipModel.getSize());
                 return false;
             }
         }
+
+        // expecting the horizontal block of positions equal to Ship.size()
+        if (firstPos.charAt(1)==secondPos.charAt(1)) {
+            length = secondPos.charAt(0) - firstPos.charAt(0) + 1;
+            if (length!=shipModel.getSize()) {
+                System.out.println("Invalid Position: the range of position must be equal to "+shipModel.getSize());
+                return false;
+            }
+        }
+
         return true;
     }
 
