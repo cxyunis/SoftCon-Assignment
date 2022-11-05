@@ -34,11 +34,11 @@ public class GameBoard {
     }
     protected boolean isHit(String blockPos) {
         String s = this.getGridStatus(blockPos);
-        return s.equals("X") || s.equals("O");
+        return s.equals("X") || s.equals("o");
     }
 
     public boolean setAttackAt(String blockPos) {
-        /* return false: either X or O, set again
+        /* return false: either has X or O, set again
         *  return true : got ship or empty
         * */
         int[] rc = convertToRowCol(blockPos);
@@ -49,8 +49,8 @@ public class GameBoard {
         } else if (isOccupied(blockPos)) {
             aBoard[r][c] = "X";
         } else {
-            aBoard[r][c] = "O";
-        }
+            aBoard[r][c] = "o";
+        }   //HERE
         return true;
     }
 
@@ -99,7 +99,7 @@ public class GameBoard {
         return (count==expectedCount);
     }
 
-    private String getGridStatus(String blockPos) {
+    protected String getGridStatus(String blockPos) {
         int[] rc = convertToRowCol(blockPos);
         return aBoard[rc[0]][rc[1]];
     }
@@ -122,7 +122,7 @@ public class GameBoard {
         }
         board[13] = " +-+-+-+-+-+-+-+-+-+-+ ";
         board[14] = "  A B C D E F G H I J  ";
-        board[15] = "========================";
+        board[15] = "=======================";
         return board;
     }
 
