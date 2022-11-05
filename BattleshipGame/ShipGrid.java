@@ -55,6 +55,7 @@ public class ShipGrid {
         return count==aShip.getSize();
     }
     public boolean updateGridPositionStatus(String gridPos) {
+        // gridPos is the attacked position
         for (GridState gs: listOfShipState) {
             if (gs.gridPos.equals(gridPos)) {
                 gs.gridStatus = 1;
