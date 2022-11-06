@@ -116,11 +116,6 @@ public class MachinePlayer implements InputSource {
     };
     public String getAttackAt() {
         return trackX.getAttackAt();
-//        Random rnd = new Random();
-//        int randomCol = rnd.nextInt(GameBoard.GRID_DIMENSION);
-//        String colHdr = GameBoard.COLUMN_HEADER.substring(randomCol,randomCol+1);
-//        int randomRow = rnd.nextInt(GameBoard.GRID_DIMENSION);
-//        return colHdr+randomRow;
     };
     public void updateAttackAtStatus(String gridPos, String gridMarker) {
         // requires update from GameModel about hit (X) or not (o), then
@@ -147,7 +142,4 @@ public class MachinePlayer implements InputSource {
 //            System.out.println(line);
 //        }
 //    }
-
-//    private String getCloseProximityAttackingPosition()
-
 }
