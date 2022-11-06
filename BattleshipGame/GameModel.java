@@ -1,21 +1,20 @@
 //import java.util.List;
 import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Random;
 
 public class GameModel {
 
     private List<Ship> boatFleet = new ArrayList<>();
-    private GameBoard oceanBoard = new GameBoard("OCEAN  GRID"); //an instance of GameBoard
-    private TargetBoard targetBoard = new TargetBoard("TARGET GRID");  // an instance of TargetBoard
+    private GameBoard oceanBoard = new GameBoard("OCEAN  GRID");
+    private TargetBoard targetBoard = new TargetBoard("TARGET GRID");  // machine player board
     private HumanPlayer oceanUser;  // an ocean user (human user)
     private MachinePlayer targetUser;  // an computerized user
 
-
     private String startingPlayer;
+    String currentPlayer;
     private String winner;
-
-    private String currentPlayer;
 
     public GameModel(String player1, String player2) {
         oceanUser = new HumanPlayer(player1);
@@ -69,7 +68,7 @@ public class GameModel {
                 humanChips = askPlayerForShipPlacement(this.oceanUser,s,shipNo);
                 listOfPos = convertToListOfPosition(humanChips.get(0),humanChips.get(1));
                 if (areGridsAvailable(oceanBoard,listOfPos,s)) {
-                    setShipOnBoard(oceanBoard,listOfPos,s);
+                    oceanBoard.setShipOnBoard(listOfPos,s);     // (1) move this responsibility to GameBoard, a block of positions
                     shipPlaced = true;
                 }
             }
@@ -87,10 +86,10 @@ public class GameModel {
                 machineChips = askPlayerForShipPlacement(this.targetUser,s,shipNo);
                 listOfPos = convertToListOfPosition(machineChips.get(0),machineChips.get(1));
                 if (areGridsAvailable(targetBoard,listOfPos,s)) {
-                    setShipOnBoard(targetBoard, listOfPos, s);
+                    targetBoard.setShipOnBoard(listOfPos, s);  // (2) move this responsibility to GameBoard, a block of positions
                     shipPlaced = true;
                     // listOfPos = [E5,E6] for Patrol (s = Ship.Patrol)
-                    targetBoard.updatePlayedShip(s,listOfPos);  // specialised to handle display at diff stages
+                    //targetBoard.updatePlayedShip(s,listOfPos);  // specialised to handle display at diff stages
                 }
             }
         }
@@ -104,22 +103,20 @@ public class GameModel {
         String status;
 
         System.out.println("\n"+startingPlayer+" starts first.");
-        if (startingPlayer=="Machine Player") {
+        if (startingPlayer.equals("Machine Player")) {
             currentPlayer = "Machine Player";
             attackPos = attackOpponent(targetUser,oceanBoard);
             status = oceanBoard.getGridStatus(attackPos);       // specialise
             targetUser.updateAttackAtStatus(attackPos,status);  // specialise
 
-
             //showGameBoard();
             showGameBoardSideBySide();
-//            targetUser.displayBoard();
+            //targetUser.displayBoard();
         }
 
         while(!gameOver) {
             currentPlayer = "Human Player";
             attackPos = attackOpponent(oceanUser,targetBoard);
-            targetBoard.updateAttackedShipGrid(attackPos);  //specialised method for target board
 
             gameOver = targetBoard.isGameOver();
             if (gameOver) {
@@ -138,12 +135,13 @@ public class GameModel {
                 }
                 //showGameBoard();
                 showGameBoardSideBySide();
-//                targetUser.displayBoard();
+                //targetUser.displayBoard();
             }
         }
         //showGameBoard();    // remove / change this for showing to opponent remaining ships
         showGameBoardSideBySide();
-        System.out.println("****************** Game Over ******************");
+
+        System.out.println("\n****************** Game Over ******************\n");
         System.out.println("The winner is "+winner);
         if (winner.equals("Machine Player")) {
             // display unhit ships
@@ -161,7 +159,7 @@ public class GameModel {
             attackPos = user.getAttackAt();
             validHitPos = opponentBoard.setAttackAt(attackPos);
             if (!validHitPos && currentPlayer.equals("Human Player")) {
-                System.out.println("Invalid Position: position to attack has been chosen before");
+                System.out.println("Invalid position!");
             }
         }
         return attackPos;
@@ -177,20 +175,12 @@ public class GameModel {
             }
         }
         if (count!=boat.getSize() && currentPlayer.equals("Human Player")) {
-            System.out.println("Invalid Position: block position(s) is/are not available!");
+            System.out.println("Block positions not available!");
             return false;   // some of grid is occupied
         }
         return true;
     }
 
-    private void setShipOnBoard(GameBoard userBoard, List<String> posList, Ship ship) {
-        // place ships on grid, not validation of input parameters
-        // posList is a list of position for ship: e.g. [A4,A5] for Patrol
-        for (String pos: posList) {
-            GridValue gv = new GridValue(pos,ship);
-            userBoard.placeShipOnBoard(gv);
-        }
-    }
     private List<String> convertToListOfPosition(GridValue start, GridValue stop) {
         /*
         convert starting and ending grids (GridValue) into a list of grids cover from starting
@@ -210,7 +200,7 @@ public class GameModel {
                 listOfPos.add(startCol+String.valueOf(i));
             }
         } else {
-            // need to revise to ensure it is really horizontal filling
+            // horizontal filling
             int idx1 = GameBoard.COLUMN_HEADER.indexOf(startCol);
             int idx2 = GameBoard.COLUMN_HEADER.indexOf(stopCol);
             for (int i=idx1; i<idx2+1; i++) {
