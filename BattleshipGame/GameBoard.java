@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameBoard {
@@ -11,6 +10,7 @@ public class GameBoard {
     protected String boardLabel;    // label appears on top of the board
     protected final String[][] aBoard = new String[GRID_DIMENSION][GRID_DIMENSION];
 
+
     public GameBoard (String name) {
         boardLabel = name;
         for (int i=0; i<GRID_DIMENSION; i++) {
@@ -20,11 +20,21 @@ public class GameBoard {
         }
     }
 
-    public void placeShipOnBoard(GridValue gridVal) {
+    // (5) change to private method
+    private void placeShipOnBoard(GridValue gridVal) {
         int[] rc = convertToRowCol(gridVal.getPosition());
         int r = rc[0];
         int c = rc[1];
         aBoard[r][c] = gridVal.getMarkerID();
+    }
+    // (4) move to here from GameModel
+    public void setShipOnBoard(List<String> posList, Ship ship) {
+        // place ships on grid, no validation of input parameters because confirmed inputs are correct
+        // posList is a list of position for ship: e.g. [A4,A5] for Patrol
+        for (String pos: posList) {
+            GridValue gv = new GridValue(pos,ship);
+            placeShipOnBoard(gv);
+        }
     }
     public boolean isOccupied(String blockPos) {
         String s = this.getGridStatus(blockPos);
