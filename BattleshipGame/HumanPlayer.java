@@ -55,13 +55,13 @@ public class HumanPlayer implements InputSource {
 
         // expecting to have size = 2, e.g J5
         if (pos.length()!=2) {
-            System.out.println("Invalid Position: input is out of bounds");
+            System.out.println("Invalid Position: input has more than 2 characters");
             return false;
         }
 
         // expecting 1st character to have letter from A-J
         if (!GameBoard.COLUMN_HEADER.contains(pos.substring(0,1))) {
-            System.out.println("Invalid Position: 1st input character is not in [A,B,...,I,J] format");
+            System.out.println("Invalid Position: input 1st character not in [A,B,...,I,J]");
             return false;
         }
 
@@ -69,7 +69,7 @@ public class HumanPlayer implements InputSource {
         char p = pos.charAt(1);
         int q = (int) p;
         if (q<48 || q>57) {
-            System.out.println("Invalid Position: 2nd input character is not in [0,1,...,8,9] format");
+            System.out.println("Invalid Position: input 2nd character not in [0,1,...,8,9]");
             return false;   // expect integer
         }
         return true;
@@ -90,7 +90,7 @@ public class HumanPlayer implements InputSource {
         return blockPos;
     }
     private boolean validateBlockPosition(List<String> blokPos, Ship shipModel) {
-        // assuming that the following are the responsibility of the player to know the rules of the game
+        // assuming that the following are responsibility of the player to know the rules of the game
         // unless for the information not available to him
         // this procedure is to validate for a range of positions (starting and ending positions)
 
@@ -111,7 +111,7 @@ public class HumanPlayer implements InputSource {
 
         // expecting horizontal or vertical placement positions only
         if (firstPos.equals(secondPos)) {
-            System.out.println("Invalid Position: starting block input and ending block input cannot be the same");
+            System.out.println("Invalid Position: input must be horizontal or vertical in range of position");
             return false;   //e.g [A4,A4]
         }
         if (firstPos.charAt(0)!=secondPos.charAt(0) &&
