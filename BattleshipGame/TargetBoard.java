@@ -11,6 +11,7 @@ public class TargetBoard extends GameBoard {
         private boolean shipSank = false;   // only update after first call, check getBoardDisplay
 
         public FullShipLoc(Ship aShip,List<String> gridPos) {
+            //getting the size of the array of the fleet of ships
             this.aShip = aShip;
             this.gridLoc = new String[gridPos.size()];
             for (int i=0; i<gridPos.size(); i++) {
@@ -77,7 +78,7 @@ public class TargetBoard extends GameBoard {
 //    }
 
     private String[][] getACopyOfTargetBoard() {
-        // get a copy of board status, only contain O,X
+        // get a copy of board status, only containing O,X
         String s;
         String[][] copyBoard = new String[GRID_DIMENSION][GRID_DIMENSION];
         for (int i=0; i<GRID_DIMENSION; i++) {
@@ -150,6 +151,7 @@ public class TargetBoard extends GameBoard {
             s = Integer.toString(i);
             for (int j = 0; j < GRID_DIMENSION; j++) {
                 if (dispBoard[i][j].equals("E")) {
+                    //to take care of an empty grid showing up instead of "E"
                     s += "| ";
                 } else {
                     s += "|" + dispBoard[i][j];
