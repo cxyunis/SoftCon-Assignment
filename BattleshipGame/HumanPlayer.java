@@ -55,7 +55,8 @@ public class HumanPlayer implements InputSource {
 
         // expecting to have size = 2, e.g J5
         if (pos.length()!=2) {
-            System.out.println("Invalid Position: input is out of bounds");
+            System.out.println("Invalid Position: each input position should be of length 2, starting with a capital letter and ending with a number, e.g.: A2\n");
+            System.out.println("If input position is to attack, there should only be one position input.");
             return false;
         }
 
@@ -97,7 +98,7 @@ public class HumanPlayer implements InputSource {
         // expecting a list of 2 (SIZE) elements, e.q [A2,A5]
         final int SIZE = 2; // expecting List of size 2, starting and ending location, e.g. [A1,A5]
         if (blokPos.size()!=SIZE) {
-            System.out.println("Invalid Position: input must have 2 position separated by comma e.g. A1,A6");
+            System.out.println("Invalid Position: input must have 2 positions separated by comma. Each position starts with a capital letter and ends with a number, e.g. A1,A6");
             return false;
         }
 
@@ -111,12 +112,12 @@ public class HumanPlayer implements InputSource {
 
         // expecting horizontal or vertical placement positions only
         if (firstPos.equals(secondPos)) {
-            System.out.println("Invalid Position: input must be horizontal or vertical in range of position");
+            System.out.println("Invalid Position: both inputs cannot be the same, e.g cannot be A1, A1");
             return false;   //e.g [A4,A4]
         }
         if (firstPos.charAt(0)!=secondPos.charAt(0) &&
             firstPos.charAt(1)!=secondPos.charAt(1)) {
-            System.out.println("Invalid Position: input must be horizontal or vertical in range of position");
+            System.out.println("Invalid Position: input must be horizontal or vertical");
             return false;   //e.g. [A4,B6], i.e not horizontal/vertical
         }
 
