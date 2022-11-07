@@ -46,8 +46,8 @@ public class GameModel {
 
         setStartingPlayer();        // set the starting player
 
-        //showGameBoard();    // display the game boards status at the start of the game
-        showGameBoardSideBySide();
+        showGameBoard();    // display the game boards status at the start of the game
+        //showGameBoardSideBySide();
 
         // ************* human player **************
         System.out.println("\nHuman/Ocean Board player inputs\n");
@@ -93,8 +93,8 @@ public class GameModel {
                 }
             }
         }
-        //showGameBoard();    // remove this once development completed
-        showGameBoardSideBySide();
+        //  showGameBoard();    // remove this once development completed
+        //showGameBoardSideBySide();
 
         // attacking starts here
         boolean gameOver = false;
@@ -109,8 +109,8 @@ public class GameModel {
             status = oceanBoard.getGridStatus(attackPos);       // specialise
             targetUser.updateAttackAtStatus(attackPos,status);  // specialise
 
-            //showGameBoard();
-            showGameBoardSideBySide();
+            showGameBoard();
+            //showGameBoardSideBySide();
             //targetUser.displayBoard();
         }
 
@@ -133,13 +133,13 @@ public class GameModel {
                 if (gameOver) {
                     winner = "Machine Player";
                 }
-                //showGameBoard();
-                showGameBoardSideBySide();
+                showGameBoard();
+                //showGameBoardSideBySide();
                 //targetUser.displayBoard();
             }
         }
-        //showGameBoard();    // remove / change this for showing to opponent remaining ships
-        showGameBoardSideBySide();
+        showGameBoard();    // remove / change this for showing to opponent remaining ships
+        //showGameBoardSideBySide();
 
         System.out.println("\n****************** Game Over ******************\n");
         System.out.println("The winner is "+winner);
@@ -174,7 +174,7 @@ public class GameModel {
                 count++;
             }
         }
-        if (count!=boat.getSize() && currentPlayer.equals("Human Player")) {
+        if (count!=boat.getSize() && currentPlayer.equals("Machine Player")) {
             System.out.println("Block positions not available!");
             return false;   // some of grid is occupied
         }
@@ -254,17 +254,17 @@ public class GameModel {
         }
     }
 
-    private void showGameBoardSideBySide() {
-        String[] tBoard;
-        String[] oBoard;
-
-        tBoard = targetBoard.getBoardDisplay();
-        System.out.println("\n");
-        String[] sideBySideBoard = new String[tBoard.length];
-        oBoard = oceanBoard.getBoardDisplay();
-        String str;
-        for (int i=0; i<tBoard.length; i++) {
-            System.out.println(tBoard[i]+"  ║  "+oBoard[i]);
-        }
-    }
+//    private void showGameBoardSideBySide() {
+//        String[] tBoard;
+//        String[] oBoard;
+//
+//        tBoard = targetBoard.getBoardDisplay();
+//        System.out.println("\n");
+//        String[] sideBySideBoard = new String[tBoard.length];
+//        oBoard = oceanBoard.getBoardDisplay();
+//        String str;
+//        for (int i=0; i<tBoard.length; i++) {
+//            System.out.println(tBoard[i]+"  ║  "+oBoard[i]);
+//        }
+//    }
 }
