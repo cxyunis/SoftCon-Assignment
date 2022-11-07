@@ -93,7 +93,7 @@ public class GameModel {
                 }
             }
         }
-        //  showGameBoard();    // remove this once development completed
+          showGameBoard();    // remove this once development completed
         //showGameBoardSideBySide();
 
         // attacking starts here
@@ -126,8 +126,8 @@ public class GameModel {
             if (!gameOver) {
                 currentPlayer = "Machine Player";
                 attackPos = attackOpponent(targetUser,oceanBoard);
-                status = oceanBoard.getGridStatus(attackPos);       // specialise
-                targetUser.updateAttackAtStatus(attackPos,status);  // specialise
+                status = oceanBoard.getGridStatus(attackPos);       // specialise, obtain the status of the ocean board at given position
+                targetUser.updateAttackAtStatus(attackPos,status);  // specialise, attack position to be used for estimation of next attack
 
                 gameOver = oceanBoard.isGameOver();
                 if (gameOver) {
@@ -145,6 +145,7 @@ public class GameModel {
         System.out.println("The winner is "+winner);
         if (winner.equals("Machine Player")) {
             // display unhit ships
+            System.out.println("The remaining ship positions are revealed below: \n");
             String[] disp = targetBoard.getFinalDisplay();
             for (String line : disp) {
                 System.out.println(line);
@@ -174,8 +175,12 @@ public class GameModel {
                 count++;
             }
         }
+        if (count!=boat.getSize() && currentPlayer.equals("Human Player")) {
+            System.out.println("Invalid input: Block positions not available!");
+            return false;   // some of grid is occupied
+        }
         if (count!=boat.getSize() && currentPlayer.equals("Machine Player")) {
-            System.out.println("Block positions not available!");
+            System.out.println("Invalid input: Block positions not available!");
             return false;   // some of grid is occupied
         }
         return true;
