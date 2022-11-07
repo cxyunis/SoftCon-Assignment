@@ -9,7 +9,7 @@ import java.util.List;
 
 public class HumanPlayer implements InputSource {
 
-    String name;
+    private String name;
 
     public HumanPlayer(String name) {
         this.name = name;
@@ -55,13 +55,13 @@ public class HumanPlayer implements InputSource {
 
         // expecting to have size = 2, e.g J5
         if (pos.length()!=2) {
-            System.out.println("Invalid Position: input has more than 2 characters");
+            System.out.println("Invalid Position: input is out of bounds");
             return false;
         }
 
         // expecting 1st character to have letter from A-J
         if (!GameBoard.COLUMN_HEADER.contains(pos.substring(0,1))) {
-            System.out.println("Invalid Position: input 1st character not in [A,B,...,I,J]");
+            System.out.println("Invalid Position: input 1st character is not in [A,B,...,I,J]");
             return false;
         }
 
@@ -69,7 +69,7 @@ public class HumanPlayer implements InputSource {
         char p = pos.charAt(1);
         int q = (int) p;
         if (q<48 || q>57) {
-            System.out.println("Invalid Position: input 2nd character not in [0,1,...,8,9]");
+            System.out.println("Invalid Position: input 2nd character is not in [0,1,...,8,9]");
             return false;   // expect integer
         }
         return true;
