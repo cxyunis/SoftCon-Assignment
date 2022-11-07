@@ -118,7 +118,7 @@ public class MachinePlayer implements InputSource {
         return trackX.getAttackAt();
     };
     public void updateAttackAtStatus(String gridPos, String gridMarker) {
-        // requires update from GameModel about hit (X) or not (o), then
+        // requires update from GameModel if hit (X) or not (o), then
         // update opponent board for internal use of selecting next attacking position
         int col = gridPos.charAt(0)-65;
         int row = gridPos.charAt(1)-48;
